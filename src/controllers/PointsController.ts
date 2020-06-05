@@ -5,11 +5,18 @@ const prisma = new PrismaClient();
 
 class PointsController {
   async create(request: Request, response: Response) {
-    const { image, city, email, latitude, longitude, name, uf, whatsapp, items } = request.body;
+    const { city, email, name, uf, whatsapp, items } = request.body;
+
+    const trimmedItems = items
+      .split(',')
+      .map((item: string) => Number(item.trim()));
+
+    const latitude = Number(request.body.latitude);
+    const longitude = Number(request.body.longitude);
 
     const insertedPoint = await prisma.points.create({
       data: {
-        image,
+        image: request.file.filename,
         city,
         email,
         latitude,
@@ -18,11 +25,12 @@ class PointsController {
         uf,
         whatsapp,
         Items: {
-          connect: items.map((item: number) => {
-            return {
-              id: item
-            }
-          })
+          connect: trimmedItems
+            .map((item: number) => {
+              return {
+                id: item
+              }
+            })
         }
       }
     });
@@ -50,7 +58,12 @@ class PointsController {
       return response.status(400).json({ message: 'Point not found.' });
     }
 
-    return response.json(point);
+    const serializedPoint = {
+      ...point,
+      image_url: `${process.env.SERVER_UPLOADS || 'http://192.168.0.104:3333/uploads/'}${point.image}`
+    };
+
+    return response.json(serializedPoint);
   };
 
   async index(request: Request, response: Response) {
@@ -58,8 +71,10 @@ class PointsController {
 
     const parsedItems = String(items)
       .split(',')
-      .map(item => Number(item.trim()))
+      .map(item => Number(item.trim()));
 
+
+    
 
     const points = await prisma.points.findMany({
       where: {
@@ -84,11 +99,19 @@ class PointsController {
       }
     });
 
+
     if (!points) {
-      return response.status(400).json({ message: 'There are no Points with the requested parameters.'})
+      return response.status(400).json({ message: 'There are no Points with the requested parameters.' })
     }
 
-    return response.json( points )
+    const serializedPoints = points.map(point => {
+      return {
+        ...point,
+        image_url: `${process.env.SERVER_UPLOADS || 'http://192.168.0.104:3333/uploads/'}${point.image}`
+      }
+    });
+
+    return response.json(serializedPoints)
   };
 }
 
