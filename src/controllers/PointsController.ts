@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 class PointsController {
   async create(request: Request, response: Response) {
+    
     const { city, email, name, uf, whatsapp, items } = request.body;
 
     const trimmedItems = items
