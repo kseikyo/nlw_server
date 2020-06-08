@@ -6,8 +6,14 @@ import express from 'express';
 import { errors } from 'celebrate';
 
 const app = express();
+const corsOptions = {
+  origin: process.env.REACT_APP_URL,
+  credentials: true
+}
 
-app.use(cors())
+app.options('*', cors(corsOptions));
+
+app.use(cors());
 app.use(express.json());
 app.use(routes);
 
