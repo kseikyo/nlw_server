@@ -61,7 +61,7 @@ class PointsController {
 
     const serializedPoint = {
       ...point,
-      image_url: `${process.env.SERVER_UPLOADS || 'http://192.168.0.104:3333/uploads/'}${point.image}`
+      image_url: `${process.env.PORT + '/uploads/' || 'http://192.168.0.104:3333/uploads/'}${point.image}`
     };
 
     return response.json(serializedPoint);
@@ -108,7 +108,7 @@ class PointsController {
     const serializedPoints = points.map(point => {
       return {
         ...point,
-        image_url: `${process.env.SERVER_UPLOADS || 'http://192.168.0.104:3333/uploads/'}${point.image}`
+        image_url: `${process.env.PORT + '/uploads/' || 'http://192.168.0.104:3333/uploads/'}${point.image}`
       }
     });
 
