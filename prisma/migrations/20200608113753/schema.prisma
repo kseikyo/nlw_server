@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+model Items {
+  id     Int      @default(autoincrement()) @id
+  image  String
+  title  String   @unique
+  Points Points[] @relation(references: [id])
+}
+
+model Points {
+  city      String
+  email     String
+  id        Int     @default(autoincrement()) @id
+  image     String
+  latitude  Float
+  longitude Float
+  name      String
+  uf        String
+  whatsapp  String
+  Items     Items[] @relation(references: [id])
+}
