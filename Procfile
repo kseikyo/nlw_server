@@ -1,1 +1,1 @@
-web: npm run deploy
+web: node dist/server.js
