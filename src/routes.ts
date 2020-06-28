@@ -21,7 +21,7 @@ routes.post(
   (req, res, next) => {
     upload.single('image')(req, res, (err: any) => {
       if(err instanceof multer.MulterError) {
-        res.status(400).json({ message: err.message })
+        res.json({ message: 'File is bigger than 2MB.' });
       }
       else if(err) {
         res.status(400).json({ message: 'File type is not accepted.'})
